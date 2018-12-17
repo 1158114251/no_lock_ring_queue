@@ -3,7 +3,6 @@
 *************************************************************************/
 
 #include <stdio.h>
-#include "testdef.h"
 #include "ring.h"
 #include <time.h>
 
@@ -32,12 +31,12 @@ int main(void)
 
 	while (1)
 	{
-		  ret = ring_buf_put_block(handle,(char *) InBuffer, sizeof(InBuffer));
+		  ret = ring_buf_put_block(handle,(char *) InBuffer, sizeof(InBuffer),-1);
 		if (ret != sizeof(InBuffer))
 		{
 			abort();
 		}
-		Sleep(10);
+	 //	Sleep(2000000ULL);
 	}
 
 	getchar();
@@ -64,9 +63,10 @@ DWORD WINAPI pthread_function(LPVOID lpParam)
 		memset(OutBuffer, 0, sizeof(OutBuffer));
 		QueryPerformanceCounter(&litmp);
 		QPart1 = litmp.QuadPart;
-		ret = ring_buf_get_block(handle, (char*)OutBuffer, sizeof(OutBuffer));
+		ret = ring_buf_get_block(handle, (char*)OutBuffer, sizeof(OutBuffer),-1);
 		if (ret != sizeof(OutBuffer))
 		{
+			printf("超时\n");
 			abort();
 		}
 		QueryPerformanceCounter(&litmp);
@@ -86,7 +86,7 @@ DWORD WINAPI pthread_function(LPVOID lpParam)
 
 		}
 #endif
-		printf("发送时间: %lf GB\n", sizeof(OutBuffer) / dfTim/1024.0/1024.0/1024.0);
+		printf("速度: %lf GB\n", sizeof(OutBuffer) / dfTim/1024.0/1024.0/1024.0);
 	}
 	return 0;
 }

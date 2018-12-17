@@ -1,19 +1,18 @@
-﻿生成启动时间为 2018/12/12 19:25:24。
-     1>项目“C:\Users\Administrator\Desktop\testdemo功能测试\testdemo\testdemo.vcxproj”在节点 2 上(Build 个目标)。
+﻿生成启动时间为 2018/12/17 14:44:37。
+     1>项目“C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\testdemo\testdemo.vcxproj”在节点 2 上(Build 个目标)。
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _DEBUG /D _MT /D _CONSOLE /D WD_DRIVER_NAME_CHANGE /D WINNT /D KERNEL_64BIT /D _CRT_SECURE_NO_DEPRECATE /D WIN32 /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TC /analyze- /errorReport:prompt ring.c
          ring.c
          C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D _DEBUG /D _MT /D _CONSOLE /D WD_DRIVER_NAME_CHANGE /D WINNT /D KERNEL_64BIT /D _CRT_SECURE_NO_DEPRECATE /D WIN32 /D _MBCS /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc120.pdb" /Gd /TP /analyze- /errorReport:prompt testdemo.cpp
          testdemo.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Desktop\testdemo功能测试\Release\testdemo.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Administrator\Desktop\testdemo功能测试\Release\testdemo.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Desktop\testdemo功能测试\Release\testdemo.lib" /MACHINE:X86 /SAFESEH Release\ring.obj
-         Release\testdef.obj
+         C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\Release\testdemo.exe" /INCREMENTAL:NO /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /DEBUG /PDB:"C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\Release\testdemo.pdb" /SUBSYSTEM:CONSOLE /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\Release\testdemo.lib" /MACHINE:X86 /SAFESEH Release\ring.obj
          Release\testdemo.obj
          正在生成代码
          已完成代码的生成
-         testdemo.vcxproj -> C:\Users\Administrator\Desktop\testdemo功能测试\Release\testdemo.exe
-     1>已完成生成项目“C:\Users\Administrator\Desktop\testdemo功能测试\testdemo\testdemo.vcxproj”(Build 个目标)的操作。
+         testdemo.vcxproj -> C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\Release\testdemo.exe
+     1>已完成生成项目“C:\Users\Administrator\Desktop\testdemo功能测试\no_lock_ring_queue\testdemo\testdemo.vcxproj”(Build 个目标)的操作。
 
 生成成功。
 
-已用时间 00:00:01.46
+已用时间 00:00:01.73

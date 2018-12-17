@@ -31,14 +31,14 @@ abort();                                                        \
 }while (0)
 
 
-#define  __SAFE_GET()   do\
+#define  __SAFE_GET( _NO_ )   do\
 {\
 EnterCriticalSection(&ring_buf->cs_safe); \
 ret = __ring_buffer_get(ring_buf, buffer, size); \
 LeaveCriticalSection(&ring_buf->cs_safe); \
 }while (0);
 
-#define  __SAFE_PUT()   do\
+#define  __SAFE_PUT(_NO_)   do\
 {\
 	EnterCriticalSection(&ring_buf->cs_safe); \
 	ret = __ring_buffer_put(ring_buf, buffer, size); \
@@ -179,7 +179,7 @@ uint32_t ring_buffer_use_len( struct ring_buffer *ring_buf)
 uint32_t ring_buffer_get( struct ring_buffer * ring_buf, char *buffer, uint32_t size)
 {
 	uint32_t ret;
-	__SAFE_GET();
+	__SAFE_GET(ret);
 	return ret;
 }
 
@@ -189,7 +189,7 @@ uint32_t ring_buffer_get( struct ring_buffer * ring_buf, char *buffer, uint32_t 
 uint32_t ring_buffer_put( struct ring_buffer *ring_buf, char *buffer, uint32_t size)
 {
 	uint32_t ret; 
-	__SAFE_PUT();
+	__SAFE_PUT(ret);
 	return ret;
 }
 
@@ -200,37 +200,48 @@ uint32_t ring_buffer_put( struct ring_buffer *ring_buf, char *buffer, uint32_t s
 一个阻塞的队列,条件变量的引入意味着，需要注意查看条件，而非单纯相信通知唤醒。
 唤醒的bug Too many，在这个业务场景。
 */
-uint32_t ring_buf_put_block(struct ring_buffer *ring_buf, char *buffer, uint32_t size)
+uint32_t ring_buf_put_block(struct ring_buffer *ring_buf, char *buffer, uint32_t size, uint32_t  time_out)
 {
 	EnterCriticalSection(&ring_buf->cs_multit_put);
-	uint32_t ret;
-	 while(ring_buffer_sur_len(ring_buf)<size)
+	uint32_t ret=0, cnt_max_loop = time_out / WAIT_TIME_OUT + 1;;
+	while (ring_buffer_sur_len(ring_buf)<size && cnt_max_loop)
 	 {
 	
 		 /*wait,it is good*/
 		 WaitForSingleObject(ring_buf->wake_put_event, WAIT_TIME_OUT);
+		 if (time_out != MAX_UNSIGNED_SIZE)
+			 cnt_max_loop--;
 	     
 	 }
-	 __SAFE_PUT();
+	if (ring_buffer_sur_len(ring_buf) < size)
+		goto end;
+	 __SAFE_PUT(ret);
 	SetEvent(ring_buf->wake_get_event);
+end:
 	LeaveCriticalSection(&ring_buf->cs_multit_put);
-    return size;
+	return ret;
 }
 
 
-uint32_t ring_buf_get_block(struct ring_buffer * ring_buf, char *buffer, uint32_t size)
+
+uint32_t ring_buf_get_block(struct ring_buffer * ring_buf, char *buffer, uint32_t size, uint32_t  time_out)
 {
 	EnterCriticalSection(&ring_buf->cs_multit_get);
-	uint32_t ret;
-	while(ring_buffer_use_len(ring_buf)<size)
+	uint32_t ret=0,cnt_max_loop= time_out / WAIT_TIME_OUT + 1 ;
+	while (ring_buffer_use_len(ring_buf)<size && cnt_max_loop)
 	{
 		/*wait*/
 		WaitForSingleObject(ring_buf->wake_get_event, WAIT_TIME_OUT);
+		if (time_out != MAX_UNSIGNED_SIZE)
+			cnt_max_loop--;
 	}
-	__SAFE_GET();
+	if (ring_buffer_use_len(ring_buf) < size)
+		goto end;
+	__SAFE_GET(ret);
 	SetEvent(ring_buf->wake_put_event);
+end:
 LeaveCriticalSection(&ring_buf->cs_multit_get);
-	return size;
+return ret;
 }
 
 
@@ -243,7 +254,7 @@ uint32_t ring_buf_try_put(struct ring_buffer *ring_buf, char *buffer, uint32_t s
 	{
 		goto end;
 	}
-	__SAFE_PUT();
+	__SAFE_PUT(ret);
 	SetEvent(ring_buf->wake_get_event);
 end:
 	LeaveCriticalSection(&ring_buf->cs_multit_put);
@@ -262,7 +273,7 @@ uint32_t ring_buf_try_get(struct ring_buffer * ring_buf, char *buffer, uint32_t 
 		
 		goto end;
 	}
-	__SAFE_GET();
+	__SAFE_GET(ret);
 	SetEvent(ring_buf->wake_put_event);
 end:
 	LeaveCriticalSection(&ring_buf->cs_multit_get);
@@ -270,3 +281,22 @@ end:
 }
 
 
+
+
+
+uint32_t  ring_buf_rm(struct ring_buffer * ring_buf, char *buffer, uint32_t size)
+{
+
+	uint32_t ret = 0;
+	if (ring_buffer_use_len(ring_buf) < size)
+		goto end;
+
+	EnterCriticalSection(&ring_buf->cs_safe); 
+		ring_buf->out += size;
+	LeaveCriticalSection(&ring_buf->cs_safe); 
+
+	SetEvent(ring_buf->wake_put_event);
+end:
+	return ret;
+
+}
